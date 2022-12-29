@@ -89,7 +89,8 @@ async function run() {
     });
     app.get("/posts", async (req, res) => {
       const query = {};
-      const posts = postsCollection.find(query).toArray();
+      const sort = { publishedDate: -1 };
+      const posts = await postsCollection.find(query).sort(sort).toArray();
       res.send(posts);
     });
   } finally {
