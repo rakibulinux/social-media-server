@@ -39,15 +39,16 @@ app.get("/", (req, res) => {
 async function run() {
   try {
     const usersCollection = client.db("socialMedia").collection("users");
+    const postsCollection = client.db("socialMedia").collection("posts");
 
     // Verfy Users function
     const verifyUsers = async (req, res, next) => {
       const decodedEmail = req.decoded.email;
       const query = { email: decodedEmail };
       const email = await usersCollection.findOne(query);
-      if (email !== decodedEmail) {
-        return res.status(403).send(`You dosen't have access to edit this`);
-      }
+      // if (email !== decodedEmail) {
+      //   return res.status(403).send(`You dosen't have access to edit this`);
+      // }
       next();
     };
 
@@ -80,6 +81,16 @@ async function run() {
         return res.send({ socialUserToken: token });
       }
       res.status(401).send({ message: "Unauthorized" });
+    });
+    app.post("/add-post", verifyJWT, verifyUsers, async (req, res) => {
+      const addPost = req.body;
+      const post = await postsCollection.insertOne(addPost);
+      res.send(post);
+    });
+    app.get("/posts", async (req, res) => {
+      const query = {};
+      const posts = postsCollection.find(query).toArray();
+      res.send(posts);
     });
   } finally {
   }
