@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 // Mongo DB Connections
@@ -92,6 +92,33 @@ async function run() {
       const sort = { publishedDate: -1 };
       const posts = await postsCollection.find(query).sort(sort).toArray();
       res.send(posts);
+    });
+    app.get("/posts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const posts = await postsCollection.findOne(query);
+      res.send(posts);
+    });
+    //Update a single post
+    app.patch("/update-post/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const reaction = req.body;
+      const filter = { _id: ObjectId(id) };
+      const option = { upsert: true };
+      console.log(reaction);
+      const updateDoc = {
+        $set: {
+          reaction: 1,
+        },
+      };
+
+      const updatePost = await postsCollection.updateOne(
+        filter,
+        updateDoc,
+        option
+      );
+      res.send(updatePost);
     });
   } finally {
   }
