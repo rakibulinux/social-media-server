@@ -40,6 +40,7 @@ async function run() {
   try {
     const usersCollection = client.db("socialMedia").collection("users");
     const postsCollection = client.db("socialMedia").collection("posts");
+    const commentsCollection = client.db("socialMedia").collection("comments");
 
     // Verfy Users function
     const verifyUsers = async (req, res, next) => {
@@ -99,6 +100,7 @@ async function run() {
       const posts = await postsCollection.findOne(query);
       res.send(posts);
     });
+
     //Update a single post
     app.patch("/update-post/:id", async (req, res) => {
       const id = req.params.id;
@@ -147,6 +149,18 @@ async function run() {
         option
       );
       res.send(updatePost);
+    });
+
+    app.get("/comments", async (req, res) => {
+      const query = {};
+      const comment = await commentsCollection.find(query).toArray();
+      res.send(comment);
+    });
+    app.post("/comments", async (req, res) => {
+      const query = req.body;
+      console.log(query);
+      const comment = await commentsCollection.insertOne(query);
+      res.send(comment);
     });
   } finally {
   }
