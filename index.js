@@ -105,7 +105,7 @@ async function run() {
     app.patch("/update-post/:id", async (req, res) => {
       const id = req.params.id;
       const reaction = req.body.newReaction;
-      console.log(reaction);
+      // console.log(reaction);
       const filter = { _id: ObjectId(id) };
       const option = { upsert: true };
       const updateDoc = {
@@ -123,7 +123,7 @@ async function run() {
     });
     app.get("/user/:email", async (req, res) => {
       const email = req.params.email;
-      console.log(email);
+      // console.log(email);
       const query = { email };
       const user = await usersCollection.findOne(query);
       res.send(user);
@@ -158,7 +158,7 @@ async function run() {
     });
     app.post("/comments", async (req, res) => {
       const query = req.body;
-      console.log(query);
+      // console.log(query);
       const comment = await commentsCollection.insertOne(query);
       res.send(comment);
     });
