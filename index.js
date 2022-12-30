@@ -129,11 +129,9 @@ async function run() {
     });
     app.patch("/updateAbout/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const name = req.body.name;
       const address = req.body.address;
       const university = req.body.university;
-      console.log(name, address, university);
       const filter = { _id: ObjectId(id) };
       const option = { upsert: true };
       const updateDoc = {
