@@ -102,14 +102,13 @@ async function run() {
     //Update a single post
     app.patch("/update-post/:id", async (req, res) => {
       const id = req.params.id;
-      // console.log(id);
-      const reaction = req.body;
+      const reaction = req.body.newReaction;
       console.log(reaction);
       const filter = { _id: ObjectId(id) };
       const option = { upsert: true };
       const updateDoc = {
         $set: {
-          reaction: 1,
+          reaction,
         },
       };
 
