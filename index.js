@@ -120,6 +120,37 @@ async function run() {
       );
       res.send(updatePost);
     });
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    });
+    app.patch("/updateAbout/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const name = req.body.name;
+      const address = req.body.address;
+      const university = req.body.university;
+      console.log(name, address, university);
+      const filter = { _id: ObjectId(id) };
+      const option = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name,
+          address,
+          university,
+        },
+      };
+
+      const updatePost = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        option
+      );
+      res.send(updatePost);
+    });
   } finally {
   }
 }
