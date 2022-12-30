@@ -94,6 +94,12 @@ async function run() {
       const posts = await postsCollection.find(query).sort(sort).toArray();
       res.send(posts);
     });
+    app.get("/mostpopular", async (req, res) => {
+      const query = {};
+      const sort = { reaction: -1 };
+      const posts = await postsCollection.find(query).sort(sort).toArray();
+      res.send(posts);
+    });
     app.get("/posts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
