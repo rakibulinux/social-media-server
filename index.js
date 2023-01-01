@@ -85,6 +85,7 @@ async function run() {
     });
     app.post("/add-post", verifyJWT, verifyUsers, async (req, res) => {
       const addPost = req.body;
+      console.log(addPost);
       const post = await postsCollection.insertOne(addPost);
       res.send(post);
     });
@@ -97,7 +98,11 @@ async function run() {
     app.get("/mostpopular", async (req, res) => {
       const query = {};
       const sort = { reaction: -1 };
-      const posts = await postsCollection.find(query).sort(sort).toArray();
+      const posts = await postsCollection
+        .find(query)
+        .sort(sort)
+        .limit(3)
+        .toArray();
       res.send(posts);
     });
     app.get("/posts/:id", async (req, res) => {
@@ -111,7 +116,8 @@ async function run() {
     app.patch("/update-post/:id", async (req, res) => {
       const id = req.params.id;
       const reaction = req.body.newReaction;
-      // console.log(reaction);
+      const body = req.body;
+      console.log(body);
       const filter = { _id: ObjectId(id) };
       const option = { upsert: true };
       const updateDoc = {
@@ -158,14 +164,22 @@ async function run() {
     });
 
     app.get("/comments", async (req, res) => {
-      const query = {};
+      const postId = req.query.postId;
+      // console.log(postId);
+      let query = {};
+      if (postId) {
+        query = {
+          postId: postId,
+        };
+      }
       const comment = await commentsCollection.find(query).toArray();
+      // console.log(comment);
       res.send(comment);
     });
     app.post("/comments", async (req, res) => {
-      const query = req.body;
+      const body = req.body;
       // console.log(query);
-      const comment = await commentsCollection.insertOne(query);
+      const comment = await commentsCollection.insertOne(body);
       res.send(comment);
     });
   } finally {
